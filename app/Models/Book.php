@@ -17,7 +17,7 @@ class Book extends Model
         'title',
         'author',
         'isbn',
-        'published_at',
+        'published_date',
         'description',
         'image_url',
     ];
@@ -33,7 +33,10 @@ class Book extends Model
 
     public function genres(): BelongsToMany
     {
-        return $this->belongsToMany(Genre::class);
+        return $this->belongsToMany(
+            Genre::class,
+            'book_genre'
+        );
     }
 
     public function reviews(): HasMany

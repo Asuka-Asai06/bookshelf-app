@@ -20,12 +20,12 @@ class StoreBookRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'digits:13', 'unique:books,isbn'],
-            'published_at' => ['required', 'date'],
+            'published_date' => ['required', 'date', 'before_or_equal:today'],
             'description' => ['nullable', 'string', 'max:255'],
             'image_url' => ['nullable', 'url', 'max:255'],
 
-            'genre_ids' => ['required', 'array', 'min:1'],
-            'genre_ids.*' => ['exists:genres,id'],
+            'genres' => ['required', 'array', 'min:1'],
+            'genres.*' => ['exists:genres,id'],
         ];
     }
 
@@ -42,17 +42,18 @@ class StoreBookRequest extends FormRequest
             'isbn.digits' => 'ISBNは13桁の数字で入力してください。',
             'isbn.unique' => 'このISBNは既に登録されています。',
 
-            'published_at.required' => '出版日を入力してください。',
-            'published_at.date' => '出版日は正しい日付形式で入力してください。',
+            'published_date.required' => '出版日を入力してください。',
+            'published_date.date' => '出版日は正しい日付形式で入力してください。',
+            'published_date.before_or_equal' => '出版日は今日以前の日付を入力してください。',
 
             'description.max' => '説明は255文字以内で入力してください。',
 
             'image_url.max' => '画像URLは255文字以内で入力してください。',
             'image_url.url' => 'URL形式が不正です。',
 
-            'genre_ids.required' => 'ジャンルを選択してください。',
-            'genre_ids.array' => 'ジャンルの形式が不正です。',
-            'genre_ids.*.exists' => '存在しないジャンルが選択されています。',
+            'genres.required' => 'ジャンルを選択してください。',
+            'genres.array' => 'ジャンルの形式が不正です。',
+            'genres.*.exists' => '存在しないジャンルが選択されています。',
         ];
     }
 }

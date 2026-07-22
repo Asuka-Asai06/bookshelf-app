@@ -14,7 +14,7 @@ class BookController extends Controller
         $books = Book::all();
         $genres = Genre::all();
 
-        $books = Book::with(['books', 'genres'])
+        $books = Book::with(['genres'])
             ->paginate(10)
             ->withQueryString();
 
@@ -23,8 +23,6 @@ class BookController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Book::class);
-
         $genres = Genre::orderBy('name')->get();
 
         return view('books.create', compact('genres'));
@@ -33,12 +31,12 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         $book = Book::create([
-            ...$request->safe()->except('genre_ids'),
+            ...$request->safe()->except('genres'),
             'user_id' => auth()->id(),
         ]);
 
         $book->genres()->sync(
-            $request->validated('genre_ids')
+            $request->validated('genres')
         );
 
         return redirect()->route('books.index')
