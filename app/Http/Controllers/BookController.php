@@ -87,4 +87,18 @@ class BookController extends Controller
         return redirect()->route('books.index')
             ->with('success', '書籍を削除しました。');
     }
+
+    public function ranking()
+    {
+        $rankedBooks = Book::query()
+            ->with(['user', 'genres'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->has('reviews')
+            ->orderByDesc('reviews_avg_rating')
+            ->take(10)
+            ->get();
+
+        return view('ranking.index', compact('rankedBooks'));
+    }
 }

@@ -9,22 +9,6 @@ use App\Models\Review;
 
 class ReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreReviewRequest $request, Book $book)
     {
         $book->reviews()->create([
@@ -35,8 +19,6 @@ class ReviewController extends Controller
         return redirect()->route('books.show', $book)
             ->with('success', 'レビューを投稿しました。');
     }
-
-    public function show(string $id) {}
 
     public function edit(Review $review)
     {
