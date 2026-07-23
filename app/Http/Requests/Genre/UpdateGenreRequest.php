@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Genre;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreGenreRequest extends FormRequest
+class UpdateGenreRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -18,7 +19,8 @@ class StoreGenreRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'unique:genres,name', ],
+                Rule::unique('genres', 'name')->ignore($this->genre),
+            ],
         ];
     }
 
