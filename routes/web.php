@@ -43,16 +43,20 @@ Route::middleware('auth')->group(function () {
     )->name('reviews.destroy');
 
     Route::post(
+        '/reviews/{review}/likes',
+        [ReviewLikeController::class, 'toggle']
+    )->name('reviews.like');
+
+    Route::post(
         '/books/{book}/favorites',
         [FavoriteController::class, 'toggle']
     )->name('favorites.toggle');
 
-    Route::post(
-        '/reviews/{review}/likes',
-        [ReviewLikeController::class, 'toggle']
-    )->name('reviews.like');
+    Route::get(
+        '/favorite/index',
+        [FavoriteController::class, 'index']
+    )->name('favorites.index');
+
 });
 
 Route::get('/ranking/index', [RankingController::class, 'index'])->name('ranking.index');
-
-Route::get('/favorite/index', [FavoriteController::class, 'create'])->name('favorites.index');

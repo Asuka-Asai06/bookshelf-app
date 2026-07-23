@@ -7,6 +7,13 @@ use Illuminate\Http\RedirectResponse;
 
 class FavoriteController extends Controller
 {
+    public function index()
+    {
+        $books = auth()->user()->favoriteBooks()->latest()->paginate(10);
+
+        return view('favorites.index', compact('books'));
+    }
+
     public function toggle(Book $book): RedirectResponse
     {
         auth()->user()->favoriteBooks()->toggle($book);
