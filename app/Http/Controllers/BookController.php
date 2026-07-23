@@ -50,7 +50,7 @@ class BookController extends Controller
             'genres',
             'reviews' => fn ($query) => $query
                 ->with('user')
-                ->withCount('likes')
+                ->withCount('likedByUsers')
                 ->latest(),
         ])->loadCount('reviews');
 
@@ -74,7 +74,7 @@ class BookController extends Controller
 
         $book->update($request->validated());
 
-        return redirect()->route('books.index')
+        return redirect()->route('books.show', $book)
             ->with('success', '書籍を更新しました。');
     }
 
