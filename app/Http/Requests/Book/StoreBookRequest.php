@@ -21,7 +21,7 @@ class StoreBookRequest extends FormRequest
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'digits:13', 'unique:books,isbn'],
             'published_date' => ['required', 'date', 'before_or_equal:today'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
             'image_url' => ['nullable', 'url', 'max:255'],
 
             'genres' => ['required', 'array', 'min:1'],

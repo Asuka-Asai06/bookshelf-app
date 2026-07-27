@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [BookController::class, 'index']);
 
-Route::resource('books', BookController::class)
-    ->only(['index', 'show']);
-
 Route::get('/ranking', [BookController::class, 'ranking'])
     ->name('ranking.index');
 
@@ -40,3 +37,6 @@ Route::middleware('auth')->group(function () {
         ->name('favorites.index');
 
 });
+
+Route::resource('books', BookController::class)
+    ->only(['index', 'show']);
