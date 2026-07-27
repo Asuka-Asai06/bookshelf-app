@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Http\Requests\API\V1;
+namespace Tests\Unit\Http\Requests\Api\V1;
 
-use App\Http\Requests\API\V1\IndexBookRequest;
+use App\Http\Requests\Api\V1\IndexBookRequest;
 use App\Models\Genre;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
@@ -71,7 +71,7 @@ class IndexBookRequestTest extends TestCase
         );
     }
 
-    public function test_ジャンル_i_dが配列でなければエラーになる(): void
+    public function test_ジャンルidが配列でなければエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([
@@ -86,7 +86,7 @@ class IndexBookRequestTest extends TestCase
         );
     }
 
-    public function test_存在しないジャンル_i_dならエラーになる(): void
+    public function test_存在しないジャンルidならエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([
