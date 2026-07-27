@@ -24,6 +24,7 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
+
             'email' => [
                 'required',
                 'string',
@@ -31,7 +32,17 @@ class CreateNewUser implements CreatesNewUsers
                 'max:255',
                 Rule::unique(User::class),
             ],
+
             'password' => $this->passwordRules(),
+
+            'password_confirmation' => [
+                'required',
+                'same:password',
+            ],
+        ], [
+            'password_confirmation.required' => 'パスワード確認を入力してください。',
+
+            'password_confirmation.same' => 'パスワードが一致しません。',
         ])->validate();
 
         return User::create([
