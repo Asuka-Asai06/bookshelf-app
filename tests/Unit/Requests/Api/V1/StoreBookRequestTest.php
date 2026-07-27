@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Http\Requests\API\V1;
+namespace Tests\Unit\Http\Requests\Api\V1;
 
-use App\Http\Requests\API\V1\StoreBookRequest;
+use App\Http\Requests\Api\V1\StoreBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Foundation\Testing\RefreshDatabase;

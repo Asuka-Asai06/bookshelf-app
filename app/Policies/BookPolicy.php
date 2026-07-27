@@ -31,14 +31,4 @@ class BookPolicy
     {
         return $book->user_id === $user->id;
     }
-
-    public function restore(User $user, Book $book): bool
-    {
-        //
-    }
-
-    public function forceDelete(User $user, Book $book): bool
-    {
-        //
-    }
 }
