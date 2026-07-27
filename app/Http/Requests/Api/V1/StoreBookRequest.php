@@ -21,7 +21,7 @@ class StoreBookRequest extends FormRequest
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'digits:13', 'unique:books,isbn'],
             'published_date' => ['required', 'date', 'before_or_equal:today'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
             'image_url' => ['nullable', 'url', 'max:255'],
 
             'genres' => ['required', 'array', 'min:1'],
@@ -46,7 +46,7 @@ class StoreBookRequest extends FormRequest
             'published_date.date' => '出版日は正しい日付形式で入力してください。',
             'published_date.before_or_equal' => '出版日は今日以前の日付を入力してください。',
 
-            'description.max' => '説明は255文字以内で入力してください。',
+            'description.max' => '説明は1000文字以内で入力してください。',
 
             'image_url.max' => '画像URLは255文字以内で入力してください。',
             'image_url.url' => 'URL形式が不正です。',

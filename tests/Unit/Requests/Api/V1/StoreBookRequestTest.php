@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Http\Requests;
+namespace Tests\Unit\Http\Requests\API\V1;
 
-use App\Http\Requests\Book\StoreBookRequest;
+use App\Http\Requests\API\V1\StoreBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,7 +48,9 @@ class StoreBookRequestTest extends TestCase
 
     public function test_必須項目が全て入力されていればバリデーションを通過する(): void
     {
-        $validator = $this->validator($this->validData());
+        $validator = $this->validator(
+            $this->validData()
+        );
 
         $this->assertTrue($validator->passes());
     }
@@ -61,16 +63,20 @@ class StoreBookRequestTest extends TestCase
             ])
         );
 
+        $this->assertFalse($validator->passes());
+
         $this->assertTrue($validator->errors()->has('title'));
     }
 
-    public function test_タイトルが255文字を超えるとエラーになる(): void
+    public function test_タイトルが255文字を超えるならエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([
                 'title' => str_repeat('あ', 256),
             ])
         );
+
+        $this->assertFalse($validator->passes());
 
         $this->assertTrue($validator->errors()->has('title'));
     }
@@ -83,16 +89,20 @@ class StoreBookRequestTest extends TestCase
             ])
         );
 
+        $this->assertFalse($validator->passes());
+
         $this->assertTrue($validator->errors()->has('author'));
     }
 
-    public function test_著者名が255文字を超えるとエラーになる(): void
+    public function test_著者名が255文字を超えるならエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([
                 'author' => str_repeat('あ', 256),
             ])
         );
+
+        $this->assertFalse($validator->passes());
 
         $this->assertTrue($validator->errors()->has('author'));
     }
@@ -142,6 +152,8 @@ class StoreBookRequestTest extends TestCase
             ])
         );
 
+        $this->assertFalse($validator->passes());
+
         $this->assertTrue($validator->errors()->has('published_date'));
     }
 
@@ -152,6 +164,8 @@ class StoreBookRequestTest extends TestCase
                 'description' => str_repeat('あ', 1001),
             ])
         );
+
+        $this->assertFalse($validator->passes());
 
         $this->assertTrue($validator->errors()->has('description'));
     }
@@ -164,18 +178,23 @@ class StoreBookRequestTest extends TestCase
             ])
         );
 
+        $this->assertFalse($validator->passes());
+
         $this->assertTrue($validator->errors()->has('image_url'));
     }
 
     public function test_画像urlが255文字を超えるとエラーになる(): void
     {
-        $url = 'https://example.com/'.str_repeat('a', 236);
+        $baseUrl = 'https://example.com/';
+        $url = $baseUrl.str_repeat('a', 256 - strlen($baseUrl));
 
         $validator = $this->validator(
             $this->validData([
                 'image_url' => $url,
             ])
         );
+
+        $this->assertFalse($validator->passes());
 
         $this->assertTrue($validator->errors()->has('image_url'));
     }
@@ -188,10 +207,12 @@ class StoreBookRequestTest extends TestCase
             ])
         );
 
+        $this->assertFalse($validator->passes());
+
         $this->assertTrue($validator->errors()->has('genres'));
     }
 
-    public function test_存在しないジャンル_i_dならエラーになる(): void
+    public function test_存在しないジャンルidならエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([
@@ -199,6 +220,23 @@ class StoreBookRequestTest extends TestCase
             ])
         );
 
+        $this->assertFalse($validator->passes());
+
         $this->assertTrue($validator->errors()->has('genres.0'));
+    }
+
+    public function test_ジャンルが配列でなければエラーになる(): void
+    {
+        $validator = $this->validator(
+            $this->validData([
+                'genres' => 1,
+            ])
+        );
+
+        $this->assertFalse($validator->passes());
+
+        $this->assertTrue(
+            $validator->errors()->has('genres')
+        );
     }
 }
