@@ -363,4 +363,159 @@ class BookControllerTest extends TestCase
 
         $response->assertDontSee('No Review Book');
     }
+
+    public function test_タイトルで書籍を検索できる(): void
+    {
+        Book::factory()->create([
+            'title' => 'Laravel入門',
+            'author' => '田中',
+        ]);
+
+        Book::factory()->create([
+            'title' => 'PHP入門',
+            'author' => '山田',
+        ]);
+
+        $response = $this->get(route('books.index', [
+            'keyword' => 'Laravel',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSee('Laravel入門');
+
+        $response->assertDontSee('PHP入門');
+    }
+
+    public function test_著者名で書籍を検索できる(): void
+    {
+        Book::factory()->create([
+            'title' => '本A',
+            'author' => '夏目漱石',
+        ]);
+
+        Book::factory()->create([
+            'title' => '本B',
+            'author' => '太宰治',
+        ]);
+
+        $response = $this->get(route('books.index', [
+            'keyword' => '夏目',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSee('本A');
+
+        $response->assertDontSee('本B');
+    }
+
+    public function test_ジャンルで書籍を検索できる(): void
+    {
+        $novel = Genre::factory()->create([
+            'name' => '小説',
+        ]);
+
+        $business = Genre::factory()->create([
+            'name' => 'ビジネス',
+        ]);
+
+        $book1 = Book::factory()->create([
+            'title' => '小説A',
+        ]);
+
+        $book1->genres()->attach($novel);
+
+        $book2 = Book::factory()->create([
+            'title' => 'ビジネスA',
+        ]);
+
+        $book2->genres()->attach($business);
+
+        $response = $this->get(route('books.index', [
+            'genre' => $novel->id,
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSee('小説A');
+
+        $response->assertDontSee('ビジネスA');
+    }
+
+    public function test_評価順で並び替えできる(): void
+    {
+        $book1 = Book::factory()->create([
+            'title' => '低評価',
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $book1->id,
+            'rating' => 2,
+        ]);
+
+        $book2 = Book::factory()->create([
+            'title' => '高評価',
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $book2->id,
+            'rating' => 5,
+        ]);
+
+        $response = $this->get(route('books.index', [
+            'sort' => 'rating',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSeeInOrder([
+            '高評価',
+            '低評価',
+        ]);
+    }
+
+    public function test_キーワードが255文字を超える場合エラーになる(): void
+    {
+        $response = $this->get(route('books.index', [
+            'keyword' => str_repeat('a', 256),
+        ]));
+
+        $response->assertSessionHasErrors([
+            'keyword',
+        ]);
+    }
+
+    public function test_存在しないジャンルでは検索できない(): void
+    {
+        $response = $this->get(route('books.index', [
+            'genre' => 9999,
+        ]));
+
+        $response->assertSessionHasErrors([
+            'genre',
+        ]);
+    }
+
+    public function test_ジャンル_i_dは数字である必要がある(): void
+    {
+        $response = $this->get(route('books.index', [
+            'genre' => 'abc',
+        ]));
+
+        $response->assertSessionHasErrors([
+            'genre',
+        ]);
+    }
+
+    public function test_存在しない並び順では検索できない(): void
+    {
+        $response = $this->get(route('books.index', [
+            'sort' => 'popular',
+        ]));
+
+        $response->assertSessionHasErrors([
+            'sort',
+        ]);
+    }
 }

@@ -71,7 +71,7 @@ class Book extends Model
     /**
      * 指定したジャンルで絞り込む。
      */
-    public function scopeGenre(Builder $query,?int $genreId): Builder
+    public function scopeGenre(Builder $query, ?int $genreId): Builder
     {
         if (empty($genreId)) {
             return $query;
@@ -85,30 +85,22 @@ class Book extends Model
         );
     }
 
-/**
- * 指定された条件で並び替える。
- *
- * @param Builder $query
- * @param string|null $sort
- * @return Builder
- */
-public function scopeSort(Builder $query,?string $sort): Builder
+    /**
+     * 指定された条件で並び替える。
+     */
+    public function scopeSort(Builder $query, ?string $sort): Builder
     {
-    return match ($sort) {
+        return match ($sort) {
 
-        'oldest'
-            => $query->oldest(),
+            'oldest' => $query->oldest(),
 
-        'title'
-            => $query->orderBy('title'),
+            'title' => $query->orderBy('title'),
 
-        'rating'
-            => $query
+            'rating' => $query
                 ->withAvg('reviews', 'rating')
                 ->orderByDesc('reviews_avg_rating'),
 
-        default
-            => $query->latest(),
-    };
-}
+            default => $query->latest(),
+        };
+    }
 }
