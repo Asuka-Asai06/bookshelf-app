@@ -9,23 +9,28 @@ use App\Models\Genre;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
     /**
      * 書籍一覧を表示する。
+     * 検索メソッドはscopeに切り分け。
      */
-    public function index(): View
-    {
-        $books = Book::all();
-        $genres = Genre::all();
+public function index(Request $request): View
+{
+    $books = Book::query()
+        ->with('genres')
+        ->keyword($request->keyword)
+        ->genre($request->genre)
+        ->sort($request->sort)
+        ->paginate(10)
+        ->withQueryString();
 
-        $books = Book::with(['genres'])
-            ->paginate(10)
-            ->withQueryString();
+    $genres = Genre::all();
 
-        return view('books.index', compact('books', 'genres'));
-    }
+    return view('books.index', compact('books','genres'));
+}
 
     /**
      * 書籍登録画面を表示する。
