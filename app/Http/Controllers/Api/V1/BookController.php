@@ -120,6 +120,8 @@ class BookController extends Controller
      */
     public function update(UpdateBookRequest $request, Book $book): JsonResponse
     {
+        $this->authorize('update', $book);
+
         $validated = $request->validated();
 
         DB::transaction(function () use ($book, $validated) {
@@ -152,6 +154,8 @@ class BookController extends Controller
      */
     public function destroy(Book $book): JsonResponse
     {
+        $this->authorize('delete', $book);
+
         $book->delete();
 
         return response()->json(null, 204);
