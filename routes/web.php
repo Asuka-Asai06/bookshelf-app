@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\BookSearchController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
@@ -40,6 +41,11 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('books', BookController::class)
     ->only(['index', 'show']);
+
+Route::get(
+    '/books/isbn/{isbn}',
+    [BookSearchController::class, 'show']
+)->name('books.search');
 
 Route::get('/reports/index', [Controller::class, 'toggle'])->name('reports.index');
 Route::get('/reading-plans/index', [Controller::class, 'toggle'])->name('reading-plans.index');
