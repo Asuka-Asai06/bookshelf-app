@@ -23,7 +23,7 @@ class Book extends Model
     ];
 
     protected $casts = [
-        'published_at' => 'date',
+        'published_date' => 'date',
     ];
 
     public function user(): BelongsTo

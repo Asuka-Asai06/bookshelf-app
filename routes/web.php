@@ -40,3 +40,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('books', BookController::class)
     ->only(['index', 'show']);
+
+Route::get('/reports/index', [Controller::class, 'toggle'])->name('reports.index');
+Route::get('/reading-plans/index', [Controller::class, 'toggle'])->name('reading-plans.index');
+Route::get('/notifications/index', [Controller::class, 'toggle'])->name('notifications.index');
