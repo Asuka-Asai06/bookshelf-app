@@ -14,7 +14,7 @@ class UpdateReviewRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'rating.required' => '評価値を入力してください。',

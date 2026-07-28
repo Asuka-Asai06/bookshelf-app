@@ -4,8 +4,9 @@ namespace Tests\Unit\Http\Requests\Api\V1;
 
 use App\Http\Requests\Api\V1\IndexBookRequest;
 use App\Models\Genre;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Tests\TestCase;
 
 class IndexBookRequestTest extends TestCase
@@ -30,11 +31,11 @@ class IndexBookRequestTest extends TestCase
         ], $overrides);
     }
 
-    private function validator(array $data)
+    private function validator(array $data): Validator
     {
         $request = new IndexBookRequest;
 
-        return Validator::make(
+        return ValidatorFacade::make(
             $data,
             $request->rules()
         );

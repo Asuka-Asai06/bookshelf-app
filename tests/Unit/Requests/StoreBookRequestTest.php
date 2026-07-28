@@ -5,8 +5,9 @@ namespace Tests\Unit\Http\Requests;
 use App\Http\Requests\Book\StoreBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Tests\TestCase;
 
 class StoreBookRequestTest extends TestCase
@@ -35,11 +36,11 @@ class StoreBookRequestTest extends TestCase
         ], $overrides);
     }
 
-    private function validator(array $data)
+    private function validator(array $data): Validator
     {
         $request = new StoreBookRequest;
 
-        return Validator::make(
+        return ValidatorFacade::make(
             $data,
             $request->rules(),
             $request->messages()

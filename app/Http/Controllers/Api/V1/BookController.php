@@ -8,6 +8,7 @@ use App\Http\Requests\API\V1\StoreBookRequest;
 use App\Http\Requests\API\V1\UpdateBookRequest;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
@@ -53,7 +54,7 @@ class BookController extends Controller
         return BookResource::collection($books);
     }
 
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -94,7 +95,7 @@ class BookController extends Controller
         return new BookResource($book);
     }
 
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(UpdateBookRequest $request, Book $book): JsonResponse
     {
         $validated = $request->validated();
 
@@ -121,7 +122,7 @@ class BookController extends Controller
             ->setStatusCode(200);
     }
 
-    public function destroy(Book $book)
+    public function destroy(Book $book): JsonResponse
     {
         $book->delete();
 

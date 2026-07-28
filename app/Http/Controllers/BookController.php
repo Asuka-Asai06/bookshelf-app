@@ -6,11 +6,13 @@ use App\Http\Requests\Book\StoreBookRequest;
 use App\Http\Requests\Book\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\Genre;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $books = Book::all();
         $genres = Genre::all();
@@ -22,14 +24,14 @@ class BookController extends Controller
         return view('books.index', compact('books', 'genres'));
     }
 
-    public function create()
+    public function create(): View
     {
         $genres = Genre::orderBy('name')->get();
 
         return view('books.create', compact('genres'));
     }
 
-    public function store(StoreBookRequest $request)
+    public function store(StoreBookRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request) {
 
@@ -47,7 +49,7 @@ class BookController extends Controller
             ->with('success', '書籍を登録しました。');
     }
 
-    public function show(Book $book)
+    public function show(Book $book): View
     {
         $book->load([
             'user',
@@ -61,7 +63,7 @@ class BookController extends Controller
         return view('books.show', compact('book'));
     }
 
-    public function edit(Book $book)
+    public function edit(Book $book): View
     {
         $this->authorize('update', $book);
 
@@ -72,7 +74,7 @@ class BookController extends Controller
         return view('books.edit', compact('book', 'genres'));
     }
 
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
         $this->authorize('update', $book);
 
@@ -82,7 +84,7 @@ class BookController extends Controller
             ->with('success', '書籍を更新しました。');
     }
 
-    public function destroy(Book $book)
+    public function destroy(Book $book): RedirectResponse
     {
         $this->authorize('delete', $book);
 
@@ -92,7 +94,7 @@ class BookController extends Controller
             ->with('success', '書籍を削除しました。');
     }
 
-    public function ranking()
+    public function ranking(): View
     {
         $rankedBooks = Book::query()
             ->with(['user', 'genres'])

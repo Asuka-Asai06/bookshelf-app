@@ -4,8 +4,9 @@ namespace Tests\Unit\Http\Requests;
 
 use App\Http\Requests\Genre\StoreGenreRequest;
 use App\Models\Genre;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Tests\TestCase;
 
 class StoreGenreRequestTest extends TestCase
@@ -19,11 +20,11 @@ class StoreGenreRequestTest extends TestCase
         ], $overrides);
     }
 
-    private function validator(array $data)
+    private function validator(array $data): Validator
     {
         $request = new StoreGenreRequest;
 
-        return Validator::make(
+        return ValidatorFacade::make(
             $data,
             $request->rules(),
             $request->messages()

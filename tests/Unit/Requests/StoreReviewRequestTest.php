@@ -3,8 +3,9 @@
 namespace Tests\Unit\Http\Requests;
 
 use App\Http\Requests\Review\StoreReviewRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Tests\TestCase;
 
 class StoreReviewRequestTest extends TestCase
@@ -19,11 +20,11 @@ class StoreReviewRequestTest extends TestCase
         ], $overrides);
     }
 
-    private function validator(array $data)
+    private function validator(array $data): Validator
     {
         $request = new StoreReviewRequest;
 
-        return Validator::make(
+        return ValidatorFacade::make(
             $data,
             $request->rules(),
             $request->messages()
