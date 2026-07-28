@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -237,5 +238,129 @@ class BookControllerTest extends TestCase
         $this->assertDatabaseHas('books', [
             'id' => $book->id,
         ]);
+    }
+
+    public function test_ランキングは上位10件のみ表示される(): void
+    {
+        $user = User::factory()->create();
+
+        for ($i = 1; $i <= 11; $i++) {
+
+            $book = Book::factory()->create([
+                'user_id' => $user->id,
+                'title' => "Book {$i}",
+            ]);
+
+            Review::factory()->create([
+                'user_id' => $user->id,
+                'book_id' => $book->id,
+                'rating' => 5,
+            ]);
+        }
+
+        $response = $this->get(route('ranking.index'));
+
+        $response->assertStatus(200);
+
+        $response->assertViewHas('rankedBooks', function ($books) {
+            return $books->count() === 10;
+        });
+    }
+
+    public function test_書籍の平均評価が高い順にランキング表示される(): void
+    {
+        $user = User::factory()->create();
+
+        // BookA（平均4.67）
+        $bookA = Book::factory()->create([
+            'user_id' => $user->id,
+            'title' => 'BookA',
+        ]);
+
+        Review::factory()->count(2)->create([
+            'book_id' => $bookA->id,
+            'user_id' => $user->id,
+            'rating' => 5,
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $bookA->id,
+            'user_id' => $user->id,
+            'rating' => 4,
+        ]);
+
+        // BookB（平均4.50）
+        $bookB = Book::factory()->create([
+            'user_id' => $user->id,
+            'title' => 'BookB',
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $bookB->id,
+            'user_id' => $user->id,
+            'rating' => 5,
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $bookB->id,
+            'user_id' => $user->id,
+            'rating' => 4,
+        ]);
+
+        // BookC（平均4.00）
+        $bookC = Book::factory()->create([
+            'user_id' => $user->id,
+            'title' => 'BookC',
+        ]);
+
+        Review::factory()->count(2)->create([
+            'book_id' => $bookC->id,
+            'user_id' => $user->id,
+            'rating' => 4,
+        ]);
+
+        $response = $this->get(route('ranking.index'));
+
+        $response->assertStatus(200);
+
+        $response->assertSeeInOrder([
+            'BookA',
+            'BookB',
+            'BookC',
+        ]);
+    }
+
+    public function test_レビューがある書籍だけランキングに表示される(): void
+    {
+        $user = User::factory()->create();
+
+        $reviewedBook = Book::factory()->create([
+            'user_id' => $user->id,
+            'title' => 'Reviewed Book',
+        ]);
+
+        Review::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $reviewedBook->id,
+            'rating' => 5,
+        ]);
+
+        $noReviewBook = Book::factory()->create([
+            'user_id' => $user->id,
+            'title' => 'No Review Book',
+        ]);
+
+        $response = $this->get(route('ranking.index'));
+
+        $response->assertStatus(200);
+
+        $response->assertViewHas('rankedBooks', function ($books) use ($reviewedBook) {
+            return $books->count() === 1
+                && $books->first()->is($reviewedBook);
+        });
+
+        $response->assertSee('Reviewed Book');
+
+        $response->assertDontSee('No Review Book');
     }
 }

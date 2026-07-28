@@ -165,7 +165,7 @@ class BookApiTest extends TestCase
         ]);
     }
 
-    public function test_自分自身の_isb_nなら更新できる(): void
+    public function test_自分自身のisbnなら更新できる(): void
     {
         $book = Book::factory()->create([
             'user_id' => $this->user->id,
@@ -184,7 +184,7 @@ class BookApiTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_他の書籍と_isb_nが重複すると更新できない(): void
+    public function test_他の書籍とisbnが重複すると更新できない(): void
     {
         Book::factory()->create([
             'isbn' => '9789999999999',
