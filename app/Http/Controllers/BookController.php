@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
+    /**
+     * 書籍一覧を表示する。
+     */
     public function index(): View
     {
         $books = Book::all();
@@ -24,6 +27,9 @@ class BookController extends Controller
         return view('books.index', compact('books', 'genres'));
     }
 
+    /**
+     * 書籍登録画面を表示する。
+     */
     public function create(): View
     {
         $genres = Genre::orderBy('name')->get();
@@ -31,6 +37,12 @@ class BookController extends Controller
         return view('books.create', compact('genres'));
     }
 
+    /**
+     * 新しい書籍を登録する。
+     * 登録成功時は書籍一覧画面へリダイレクトする。
+     *
+     * @param  StoreBookRequest  $request  バリデーション済みのリクエスト
+     */
     public function store(StoreBookRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request) {
@@ -49,6 +61,11 @@ class BookController extends Controller
             ->with('success', '書籍を登録しました。');
     }
 
+    /**
+     * 書籍の詳細画面を表示する。
+     *
+     * @param  Book  $book  表示対象の書籍
+     */
     public function show(Book $book): View
     {
         $book->load([
@@ -63,6 +80,11 @@ class BookController extends Controller
         return view('books.show', compact('book'));
     }
 
+    /**
+     * 書籍編集画面を表示する。
+     *
+     * @param  Book  $book  編集対象の書籍
+     */
     public function edit(Book $book): View
     {
         $this->authorize('update', $book);
@@ -74,6 +96,13 @@ class BookController extends Controller
         return view('books.edit', compact('book', 'genres'));
     }
 
+    /**
+     * 書籍情報を更新する。
+     * 更新成功時は書籍一覧画面へリダイレクトする。
+     *
+     * @param  UpdateBookRequest  $request  更新内容を含むリクエスト
+     * @param  Book  $book  更新対象の書籍
+     */
     public function update(UpdateBookRequest $request, Book $book): RedirectResponse
     {
         $this->authorize('update', $book);
@@ -84,6 +113,12 @@ class BookController extends Controller
             ->with('success', '書籍を更新しました。');
     }
 
+    /**
+     * 書籍を削除する。
+     * 削除成功時は書籍一覧画面へリダイレクトする。
+     *
+     * @param  Book  $book  削除対象の書籍
+     */
     public function destroy(Book $book): RedirectResponse
     {
         $this->authorize('delete', $book);
@@ -94,6 +129,9 @@ class BookController extends Controller
             ->with('success', '書籍を削除しました。');
     }
 
+    /**
+     * 平均評価の高い書籍ランキング（上位10件）を表示する。
+     */
     public function ranking(): View
     {
         $rankedBooks = Book::query()

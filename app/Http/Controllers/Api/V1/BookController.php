@@ -14,6 +14,13 @@ use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
+    /**
+     * 書籍一覧を取得する。
+     *
+     * キーワードやジャンルで絞り込み、ページネーションした結果を返す。
+     *
+     * @param  IndexBookRequest  $request  検索条件を含むリクエスト
+     */
     public function index(IndexBookRequest $request): AnonymousResourceCollection
     {
         $books = Book::query()
@@ -54,6 +61,11 @@ class BookController extends Controller
         return BookResource::collection($books);
     }
 
+    /**
+     * 新しい書籍を登録し、登録した書籍情報を返す。
+     *
+     * @param  StoreBookRequest  $request  バリデーション済みのリクエスト
+     */
     public function store(StoreBookRequest $request): JsonResponse
     {
         $validated = $request->validated();
@@ -84,6 +96,11 @@ class BookController extends Controller
             ->setStatusCode(201);
     }
 
+    /**
+     * 指定した書籍の詳細情報を取得する。
+     *
+     * @param  Book  $book  取得対象の書籍
+     */
     public function show(Book $book): BookResource
     {
         $book->load([
@@ -95,6 +112,12 @@ class BookController extends Controller
         return new BookResource($book);
     }
 
+    /**
+     * 指定した書籍情報を更新し、更新後の書籍情報を返す。
+     *
+     * @param  UpdateBookRequest  $request  バリデーション済みのリクエスト
+     * @param  Book  $book  更新対象の書籍
+     */
     public function update(UpdateBookRequest $request, Book $book): JsonResponse
     {
         $validated = $request->validated();
@@ -122,6 +145,11 @@ class BookController extends Controller
             ->setStatusCode(200);
     }
 
+    /**
+     * 指定した書籍を削除し、204 No Content を返す。
+     *
+     * @param  Book  $book  削除対象の書籍
+     */
     public function destroy(Book $book): JsonResponse
     {
         $book->delete();
