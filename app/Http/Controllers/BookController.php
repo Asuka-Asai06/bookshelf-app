@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Book\IndexBookRequest;
 use App\Http\Requests\Book\StoreBookRequest;
 use App\Http\Requests\Book\UpdateBookRequest;
 use App\Models\Book;
@@ -14,15 +15,19 @@ class BookController extends Controller
 {
     /**
      * 書籍一覧を表示する。
+     * 検索メソッドはscopeに切り分け。
      */
-    public function index(): View
+    public function index(IndexBookRequest $request): View
     {
-        $books = Book::all();
-        $genres = Genre::all();
-
-        $books = Book::with(['genres'])
+        $books = Book::query()
+            ->with('genres')
+            ->keyword($request->keyword)
+            ->genre($request->genre)
+            ->sort($request->sort)
             ->paginate(10)
             ->withQueryString();
+
+        $genres = Genre::all();
 
         return view('books.index', compact('books', 'genres'));
     }
