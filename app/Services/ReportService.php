@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class ReportService
@@ -13,20 +13,20 @@ class ReportService
      */
     public function getStats(User $user): array
     {
-        $reviews = $user->reviews();
+        $reviews = $user->reviews()->getQuery();
 
         return [
-            'summary' => $this->getSummary($reviews),
-            'rating_distribution' => $this->getRatingDistribution($reviews),
-            'top_rated_books' => $this->getTopRatedBooks($reviews),
-            'genre_ratings' => $this->getGenreRatings($reviews),
+            'summary' => $this->getSummary(clone $reviews),
+            'rating_distribution' => $this->getRatingDistribution(clone $reviews),
+            'top_rated_books' => $this->getTopRatedBooks(clone $reviews),
+            'genre_ratings' => $this->getGenreRatings(clone $reviews),
         ];
     }
 
     /**
      * 基本サマリー（総レビュー数、読了冊数、平均評価）を取得する。
      */
-    private function getSummary(HasMany $reviews): array
+    private function getSummary(Builder $reviews): array
     {
         return [
             'total_reviews' => (clone $reviews)->count(),
@@ -41,7 +41,7 @@ class ReportService
     /**
      * 評価分布を取得する。
      */
-    private function getRatingDistribution(HasMany $reviews): Collection
+    private function getRatingDistribution(Builder $reviews): Collection
     {
         return collect(range(1, 5))
             ->map(fn ($rating) => (clone $reviews)
@@ -52,7 +52,7 @@ class ReportService
     /**
      * 高評価書籍TOP5を取得する。
      */
-    private function getTopRatedBooks(HasMany $reviews): Collection
+    private function getTopRatedBooks(Builder $reviews): Collection
     {
         return $reviews
             ->with('book')
@@ -72,7 +72,7 @@ class ReportService
     /**
      * ジャンル別評価傾向TOP5を取得する。
      */
-    private function getGenreRatings(HasMany $reviews): Collection
+    private function getGenreRatings(Builder $reviews): Collection
     {
         return $reviews
             ->with('book.genres')
