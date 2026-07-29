@@ -128,7 +128,9 @@ class BookController extends Controller
     {
         $this->authorize('delete', $book);
 
-        $book->delete();
+        DB::transaction(function () use ($book) {
+            $book->delete();
+        });
 
         return redirect()->route('books.index')
             ->with('success', '書籍を削除しました。');

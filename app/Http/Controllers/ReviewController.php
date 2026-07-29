@@ -8,6 +8,7 @@ use App\Models\Book;
 use App\Models\Review;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
@@ -72,7 +73,9 @@ class ReviewController extends Controller
 
         $book = $review->book;
 
-        $review->delete();
+        DB::transaction(function () use ($review) {
+            $review->delete();
+        });
 
         return redirect()->route('books.show', $book)
             ->with('success', 'レビューを削除しました。');
