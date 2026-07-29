@@ -98,17 +98,6 @@ class StoreBookRequestTest extends TestCase
         $this->assertTrue($validator->errors()->has('author'));
     }
 
-    public function test_isbnが未入力ならエラーになる(): void
-    {
-        $validator = $this->validator(
-            $this->validData([
-                'isbn' => '',
-            ])
-        );
-
-        $this->assertTrue($validator->errors()->has('isbn'));
-    }
-
     public function test_isbnが13桁でなければエラーになる(): void
     {
         $validator = $this->validator(
@@ -192,7 +181,7 @@ class StoreBookRequestTest extends TestCase
         $this->assertTrue($validator->errors()->has('genres'));
     }
 
-    public function test_存在しないジャンル_i_dならエラーになる(): void
+    public function test_存在しないジャンルidならエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([

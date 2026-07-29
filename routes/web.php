@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\BookSearchController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/favorite/index', [FavoriteController::class, 'index'])
         ->name('favorites.index');
 
+    Route::get('/reports/index', [ReportController::class, 'index'])->name('reports.index');
+
 });
 
 Route::resource('books', BookController::class)
@@ -47,6 +50,5 @@ Route::get(
     [BookSearchController::class, 'show']
 )->name('books.search');
 
-Route::get('/reports/index', [Controller::class, 'toggle'])->name('reports.index');
 Route::get('/reading-plans/index', [Controller::class, 'toggle'])->name('reading-plans.index');
 Route::get('/notifications/index', [Controller::class, 'toggle'])->name('notifications.index');
