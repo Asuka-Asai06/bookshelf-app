@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Api\V1\BookSearchController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
 use Illuminate\Support\Facades\Route;

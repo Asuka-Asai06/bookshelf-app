@@ -443,6 +443,54 @@ class BookControllerTest extends TestCase
         $response->assertDontSee('ビジネスA');
     }
 
+    public function test_新しい順で並び替えできる(): void
+    {
+        $book1 = Book::factory()->create([
+            'title' => '古い本',
+            'created_at' => now()->subDay(),
+        ]);
+
+        $book2 = Book::factory()->create([
+            'title' => '新しい本',
+            'created_at' => now(),
+        ]);
+
+        $response = $this->get(route('books.index', [
+            'sort' => 'newest',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSeeInOrder([
+            '新しい本',
+            '古い本',
+        ]);
+    }
+
+    public function test_古い順で並び替えできる(): void
+    {
+        $book1 = Book::factory()->create([
+            'title' => '古い本',
+            'created_at' => now()->subDay(),
+        ]);
+
+        $book2 = Book::factory()->create([
+            'title' => '新しい本',
+            'created_at' => now(),
+        ]);
+
+        $response = $this->get(route('books.index', [
+            'sort' => 'oldest',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSeeInOrder([
+            '古い本',
+            '新しい本',
+        ]);
+    }
+
     public function test_評価順で並び替えできる(): void
     {
         $book1 = Book::factory()->create([
@@ -475,6 +523,33 @@ class BookControllerTest extends TestCase
         ]);
     }
 
+    public function test_タイトル順で並び替えできる(): void
+    {
+        Book::factory()->create([
+            'title' => 'さくら',
+        ]);
+
+        Book::factory()->create([
+            'title' => 'あお',
+        ]);
+
+        Book::factory()->create([
+            'title' => 'もも',
+        ]);
+
+        $response = $this->get(route('books.index', [
+            'sort' => 'title',
+        ]));
+
+        $response->assertOk();
+
+        $response->assertSeeInOrder([
+            'あお',
+            'さくら',
+            'もも',
+        ]);
+    }
+
     public function test_キーワードが255文字を超える場合エラーになる(): void
     {
         $response = $this->get(route('books.index', [
@@ -497,7 +572,7 @@ class BookControllerTest extends TestCase
         ]);
     }
 
-    public function test_ジャンル_i_dは数字である必要がある(): void
+    public function test_ジャンルidは数字である必要がある(): void
     {
         $response = $this->get(route('books.index', [
             'genre' => 'abc',
