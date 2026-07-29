@@ -2,63 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\ReportService;
+use Illuminate\Contracts\View\View;
 
 class ReportController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * マイ読書レポート。詳細なメソッドはReportServiceへ切り分け。
      */
-    public function index()
-    {
-        //
-    }
+    public function __construct(private readonly ReportService $reportService) {}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(): View
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('reports.index', [
+            'stats' => $this->reportService->getStats(auth()->user()),
+        ]);
     }
 }
