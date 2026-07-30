@@ -6,12 +6,14 @@ enum ReadingPlanStatus: string
 {
     case Planned = 'planned';
     case Completed = 'completed';
+    case Overdue = 'overdue';
 
     public function label(): string
     {
         return match ($this) {
             self::Planned => '未読',
             self::Completed => '読了',
+            self::Overdue => '期限超過',
         };
     }
 
@@ -20,6 +22,7 @@ enum ReadingPlanStatus: string
         return match ($this) {
             self::Planned => 'bg-gray-100 text-gray-800',
             self::Completed => 'bg-green-100 text-green-800',
+            self::Overdue => 'bg-red-100 text-red-800',
         };
     }
 }
