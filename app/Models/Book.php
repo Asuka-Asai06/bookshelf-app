@@ -53,6 +53,11 @@ class Book extends Model
         );
     }
 
+    public function readingPlans(): HasMany
+    {
+        return $this->hasMany(ReadingPlan::class);
+    }
+
     /**
      * タイトルまたは著者名で検索する。
      */

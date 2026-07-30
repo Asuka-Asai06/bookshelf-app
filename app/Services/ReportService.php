@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Book;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -16,7 +17,7 @@ class ReportService
         $reviews = $user->reviews()->getQuery();
 
         return [
-            'summary' => $this->getSummary(clone $reviews),
+            'summary' => $this->getSummary(clone $reviews, $user),
             'rating_distribution' => $this->getRatingDistribution(clone $reviews),
             'top_rated_books' => $this->getTopRatedBooks(clone $reviews),
             'genre_ratings' => $this->getGenreRatings(clone $reviews),
@@ -26,15 +27,23 @@ class ReportService
     /**
      * 基本サマリー（総レビュー数、読了冊数、平均評価）を取得する。
      */
-    private function getSummary(Builder $reviews): array
+    private function getSummary(Builder $reviews, User $user): array
     {
+        $reviewBookIds = (clone $reviews)
+            ->pluck('book_id');
+
+        $registeredBookIds = Book::where('user_id', $user)
+            ->pluck('id');
+
+        $booksRead = $reviewBookIds
+            ->merge($registeredBookIds)
+            ->unique()
+            ->count();
+
         return [
             'total_reviews' => (clone $reviews)->count(),
-            'books_read' => (clone $reviews)
-                ->distinct('book_id')
-                ->count('book_id'),
-            'average_rating' => (clone $reviews)
-                ->avg('rating') ?? 0,
+            'books_read' => $booksRead,
+            'average_rating' => (clone $reviews)->avg('rating') ?? 0,
         ];
     }
 
