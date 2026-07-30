@@ -74,8 +74,8 @@
                             </div>
                             @if($book->description)
                                 <div class="mb-4">
-                                    <strong>説明:</strong>
-                                    <p class="mt-2 text-gray-700">{{ $book->description }}</p>
+                                    <strong>説明:</strong><p class="mt-2 text-gray-700 whitespace-pre-line">
+                                    <p class="mt-2 text-gray-700 whitespace-pre-line">{{ $book->description }}</p>
                                 </div>
                             @endif
 
@@ -159,7 +159,7 @@
                                             <span class="text-sm text-gray-500">{{ $review->created_at->format('Y/m/d') }}</span>
                                         </div>
                                         @if($review->comment)
-                                            <p class="text-gray-700">{{ $review->comment }}</p>
+                                            <p class="text-gray-700 whitespace-pre-line">{{ $review->comment }}</p>
                                         @endif
 
                                         <div class="mt-3 flex items-center justify-between">
