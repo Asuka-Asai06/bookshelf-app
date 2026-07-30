@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ReadingPlanStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,5 +34,19 @@ class ReadingPlan extends Model
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
+    }
+
+    /**
+     * 読書状態で絞り込む。
+     *
+     * @param  mixed  $query
+     * @param  mixed  $status
+     */
+    public function scopeStatus(Builder $query, ?string $status): Builder
+    {
+        return $query->when(
+            $status,
+            fn ($query) => $query->where('status', $status)
+        );
     }
 }

@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Http\Requests\ReadingPlan;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreReadingPlanRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'book_id' => ['required', 'exists:books,id'],
+            'target_date' => ['required', 'date', 'after_or_equal:today'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'book_id.required' => '書籍を選択してください。',
+            'target_date.required' => '期日を選択してください',
+            'target_date.after_or_equal' => '期日は今日以降の日付を選択してください。',
+        ];
+    }
+}

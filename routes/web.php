@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\BookSearchController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\ReadingPlanController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewLikeController;
@@ -40,15 +41,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/reports/index', [ReportController::class, 'index'])->name('reports.index');
 
+    Route::resource('reading-plans', ReadingPlanController::class);
+    Route::post('/reading-plans/{readingPlan}/complete', [ReadingPlanController::class, 'complete'])->name('reading-plans.complete');
+
 });
 
 Route::resource('books', BookController::class)
     ->only(['index', 'show']);
 
-Route::get(
-    '/books/isbn/{isbn}',
-    [BookSearchController::class, 'show']
-)->name('books.search');
+Route::get('/books/isbn/{isbn}', [BookSearchController::class, 'show'])->name('books.search');
 
-Route::get('/reading-plans/index', [Controller::class, 'toggle'])->name('reading-plans.index');
 Route::get('/notifications/index', [Controller::class, 'toggle'])->name('notifications.index');

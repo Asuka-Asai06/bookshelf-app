@@ -15,6 +15,7 @@ return new class extends Migration
             $table->date('target_date');
             $table->string('status')->default('planned');
             $table->date('completed_at')->nullable();
+            $table->unique(['user_id', 'book_id']);
             $table->timestamps();
         });
     }
