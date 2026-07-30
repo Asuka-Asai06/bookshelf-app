@@ -54,4 +54,9 @@ class User extends Authenticatable
             'review_likes'
         );
     }
+
+    public function readingPlans(): HasMany
+    {
+        return $this->hasMany(ReadingPlan::class);
+    }
 }
