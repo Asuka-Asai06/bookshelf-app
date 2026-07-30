@@ -22,8 +22,8 @@
                             <div class="flex gap-2">
                                 @for($i = 1; $i <= 5; $i++)
                                     <label class="cursor-pointer">
-                                        <input type="radio" name="rating" value="{{ $i }}" class="sr-only peer" {{ old('rating', $review->rating) == $i ? 'checked' : '' }} required>
-                                        <span class="text-2xl peer-checked:text-yellow-400 text-gray-300 hover:text-yellow-400">★</span>
+                                        <input type="radio" name="rating" value="{{ $i }}" class="sr-only" {{ old('rating', $review->rating) == $i ? 'checked' : '' }} required>
+                                        <span class="text-2xl text-gray-300 hover:text-yellow-400 star">★</span>
                                     </label>
                                 @endfor
                             </div>
@@ -52,3 +52,34 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="rating"]');
+    const stars = document.querySelectorAll('.star');
+
+    function updateStars(value) {
+        stars.forEach((star, index) => {
+            if (index < value) {
+                star.classList.add('text-yellow-400');
+                star.classList.remove('text-gray-300');
+            } else {
+                star.classList.add('text-gray-300');
+                star.classList.remove('text-yellow-400');
+            }
+        });
+    }
+
+    radios.forEach((radio) => {
+        radio.addEventListener('change', function () {
+            updateStars(this.value);
+        });
+    });
+
+    const checkedRadio = document.querySelector('input[name="rating"]:checked');
+
+    if (checkedRadio) {
+        updateStars(checkedRadio.value);
+    }
+});
+</script>
