@@ -28,7 +28,7 @@ class CheckReadingPlans extends Command
     private function updateOverduePlans(): void
     {
         ReadingPlan::whereDate('target_date', '<', today())
-            ->where('status', '!=', ReadingPlanStatus::Completed)
+            ->where('status', ReadingPlanStatus::In_Progress)
             ->update([
                 'status' => ReadingPlanStatus::Overdue,
             ]);
@@ -52,6 +52,7 @@ class CheckReadingPlans extends Command
     private function sendThreeDaysBeforeNotification(): void
     {
         $plans = ReadingPlan::with(['user', 'book'])
+            ->where('status', ReadingPlanStatus::In_Progress)
             ->whereDate(
                 'target_date',
                 today()->addDays(3)
@@ -77,16 +78,15 @@ class CheckReadingPlans extends Command
     private function sendDueDateNotification(): void
     {
         $plans = ReadingPlan::with(['user', 'book'])
-            ->whereDate(
-                'target_date',
-                today()
-            )
+            ->where('status', ReadingPlanStatus::In_Progress)
+            ->whereDate('target_date', today())
             ->get();
 
         foreach ($plans as $plan) {
             if ($this->alreadySent($plan, 'on_due_date')) {
                 continue;
             }
+
             $plan->user->notify(
                 new ReadingPlanReminderNotification(
                     $plan,
@@ -102,14 +102,15 @@ class CheckReadingPlans extends Command
     private function sendThreeDaysAfterNotification(): void
     {
         $plans = ReadingPlan::with(['user', 'book'])
+            ->where('status', ReadingPlanStatus::In_Progress)
             ->whereDate(
                 'target_date',
-                today()->subDays(3)
+                today()->addDays(3)
             )
             ->get();
 
         foreach ($plans as $plan) {
-            if ($this->alreadySent($plan, 'on_due_date')) {
+            if ($this->alreadySent($plan, 'three_days_after')) {
                 continue;
             }
             $plan->user->notify(
