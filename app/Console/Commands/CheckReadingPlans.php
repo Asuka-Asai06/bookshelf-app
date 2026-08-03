@@ -102,10 +102,10 @@ class CheckReadingPlans extends Command
     private function sendThreeDaysAfterNotification(): void
     {
         $plans = ReadingPlan::with(['user', 'book'])
-            ->where('status', ReadingPlanStatus::In_Progress)
+            ->where('status', ReadingPlanStatus::Overdue)
             ->whereDate(
                 'target_date',
-                today()->addDays(3)
+                today()->subDays(3)
             )
             ->get();
 
@@ -113,6 +113,7 @@ class CheckReadingPlans extends Command
             if ($this->alreadySent($plan, 'three_days_after')) {
                 continue;
             }
+
             $plan->user->notify(
                 new ReadingPlanReminderNotification(
                     $plan,

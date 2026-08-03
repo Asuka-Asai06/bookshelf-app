@@ -3,6 +3,7 @@
 namespace App\Http\Requests\ReadingPlan;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreReadingPlanRequest extends FormRequest
 {
@@ -14,7 +15,12 @@ class StoreReadingPlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'book_id' => ['required', 'exists:books,id'],
+            'book_id' => [
+                'required',
+                'exists:books,id',
+                Rule::unique('reading_plans')
+                    ->where('user_id', auth()->id()),
+            ],
             'target_date' => ['required', 'date', 'after_or_equal:today'],
         ];
     }

@@ -49,34 +49,4 @@ class ReadingPlan extends Model
             fn ($query) => $query->where('status', $status)
         );
     }
-
-    /**
-     * 当日期限を表示する
-     */
-    public function displayStatus(): string
-    {
-        if (
-            $this->status === ReadingPlanStatus::In_Progress
-            && $this->target_date->isToday()
-        ) {
-            return '本日期限';
-        }
-
-        return $this->status->label();
-    }
-
-    /**
-     * 本日期限の色分け
-     */
-    public function displayStatusClass(): string
-    {
-        if (
-            $this->status === ReadingPlanStatus::In_Progress
-            && $this->target_date->isToday()
-        ) {
-            return 'bg-yellow-100 text-yellow-800';
-        }
-
-        return $this->status->badgeClass();
-    }
 }
