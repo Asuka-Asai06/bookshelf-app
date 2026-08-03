@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IndexBookRequest extends FormRequest
 {
@@ -16,8 +17,10 @@ class IndexBookRequest extends FormRequest
         return [
             'keyword' => ['nullable', 'string', 'max:255'],
 
-            'genre_ids' => ['nullable', 'array'],
-            'genre_ids.*' => ['exists:genres,id'],
+            'genre' => [
+                'nullable',
+                Rule::exists('genres', 'name'),
+            ],
 
             'per_page' => ['nullable', 'integer', 'between:1,100'],
         ];

@@ -26,7 +26,7 @@ class IndexBookRequestTest extends TestCase
     {
         return array_merge([
             'keyword' => 'Laravel',
-            'genre_ids' => [$this->genre->id],
+            'genre' => [$this->genre->name],
             'per_page' => 20,
         ], $overrides);
     }
@@ -72,33 +72,18 @@ class IndexBookRequestTest extends TestCase
         );
     }
 
-    public function test_ジャンルidが配列でなければエラーになる(): void
+    public function test_存在しないジャンル名ならエラーになる(): void
     {
         $validator = $this->validator(
             $this->validData([
-                'genre_ids' => 1,
+                'genre' => '存在しないジャンル',
             ])
         );
 
         $this->assertFalse($validator->passes());
 
         $this->assertTrue(
-            $validator->errors()->has('genre_ids')
-        );
-    }
-
-    public function test_存在しないジャンルidならエラーになる(): void
-    {
-        $validator = $this->validator(
-            $this->validData([
-                'genre_ids' => [999],
-            ])
-        );
-
-        $this->assertFalse($validator->passes());
-
-        $this->assertTrue(
-            $validator->errors()->has('genre_ids.0')
+            $validator->errors()->has('genre')
         );
     }
 

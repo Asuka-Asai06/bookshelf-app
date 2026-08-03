@@ -39,15 +39,14 @@ class BookController extends Controller
                     });
                 }
             )
-// WhereInでor検索、ANDならWhereに変更
             ->when(
-                $request->filled('genre_ids'),
+                $request->filled('genre'),
                 function ($query) use ($request) {
                     $query->whereHas(
                         'genres',
-                        fn ($query) => $query->whereIn(
-                            'genres.id',
-                            $request->genre_ids
+                        fn ($query) => $query->where(
+                            'name',
+                            $request->genre
                         )
                     );
                 }
