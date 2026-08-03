@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ReadingPlanStatus;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,9 +36,8 @@ class ReportService
         $registeredBookIds = Book::where('user_id', $user)
             ->pluck('id');
 
-        $booksRead = $reviewBookIds
-            ->merge($registeredBookIds)
-            ->unique()
+        $booksRead = $user->readingPlans()
+            ->where('status', ReadingPlanStatus::Completed)
             ->count();
 
         return [
