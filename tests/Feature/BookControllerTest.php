@@ -269,53 +269,62 @@ class BookControllerTest extends TestCase
 
     public function test_書籍の平均評価が高い順にランキング表示される(): void
     {
-        $user = User::factory()->create();
+        $users = User::factory()->count(7)->create();
 
         // BookA（平均4.67）
         $bookA = Book::factory()->create([
-            'user_id' => $user->id,
             'title' => 'BookA',
         ]);
 
-        Review::factory()->count(2)->create([
+        Review::factory()->create([
             'book_id' => $bookA->id,
-            'user_id' => $user->id,
+            'user_id' => $users[0]->id,
             'rating' => 5,
         ]);
 
         Review::factory()->create([
             'book_id' => $bookA->id,
-            'user_id' => $user->id,
+            'user_id' => $users[1]->id,
+            'rating' => 5,
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $bookA->id,
+            'user_id' => $users[2]->id,
             'rating' => 4,
         ]);
 
         // BookB（平均4.50）
         $bookB = Book::factory()->create([
-            'user_id' => $user->id,
             'title' => 'BookB',
         ]);
 
         Review::factory()->create([
             'book_id' => $bookB->id,
-            'user_id' => $user->id,
+            'user_id' => $users[3]->id,
             'rating' => 5,
         ]);
 
         Review::factory()->create([
             'book_id' => $bookB->id,
-            'user_id' => $user->id,
+            'user_id' => $users[4]->id,
             'rating' => 4,
         ]);
 
         // BookC（平均4.00）
         $bookC = Book::factory()->create([
-            'user_id' => $user->id,
             'title' => 'BookC',
         ]);
 
-        Review::factory()->count(2)->create([
+        Review::factory()->create([
             'book_id' => $bookC->id,
-            'user_id' => $user->id,
+            'user_id' => $users[5]->id,
+            'rating' => 4,
+        ]);
+
+        Review::factory()->create([
+            'book_id' => $bookC->id,
+            'user_id' => $users[6]->id,
             'rating' => 4,
         ]);
 

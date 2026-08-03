@@ -198,13 +198,17 @@
                                             <!-- 編集・削除ボタン -->
                                             <div class="flex items-center gap-2">
                                                 @can('update', $review)
-                                                    <a href="{{ route('reviews.edit', $review) }}" class="text-sm text-gray-500 hover:text-gray-700">編集</a>
+                                                    <a href="{{ route('reviews.edit', $review) }}"class="text-sm leading-5 text-gray-500 hover:text-gray-700">
+                                                        編集
+                                                    </a>
                                                 @endcan
                                                 @can('delete', $review)
-                                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST" onsubmit="return confirm('本当に削除しますか？')" novalidate>
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-sm text-red-500 hover:text-red-700">削除</button>
+                                                    <form action="{{ route('reviews.destroy', $review) }}"method="POST" class="inline-flex" onsubmit="return confirm('本当に削除しますか？')" novalidate>
+                                                @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-sm leading-5 text-red-500 hover:text-red-700">
+                                                        削除
+                                                    </button>
                                                     </form>
                                                 @endcan
                                             </div>

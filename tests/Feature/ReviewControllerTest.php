@@ -45,6 +45,26 @@ class ReviewControllerTest extends TestCase
         ]);
     }
 
+    public function test_同じユーザーは同じ本に複数レビューできない(): void
+    {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+
+        Review::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('reviews.store', $book), [
+                'rating' => 5,
+                'comment' => '2回目のレビュー',
+            ]);
+
+        $response->assertSessionHasErrors();
+    }
+
     public function test_評価が未入力では投稿できない(): void
     {
         $response = $this->actingAs($this->user)

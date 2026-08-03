@@ -21,4 +21,12 @@ class ReviewFactory extends Factory
             'comment' => fake()->realText(80),
         ];
     }
+
+    public function forUserAndBook(User $user, Book $book): static
+    {
+        return $this->state([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+        ]);
+    }
 }
