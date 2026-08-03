@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\ReadingPlanStatus;
-use App\Models\Book;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -30,19 +29,11 @@ class ReportService
      */
     private function getSummary(Builder $reviews, User $user): array
     {
-        $reviewBookIds = (clone $reviews)
-            ->pluck('book_id');
-
-        $registeredBookIds = Book::where('user_id', $user)
-            ->pluck('id');
-
-        $booksRead = $user->readingPlans()
-            ->where('status', ReadingPlanStatus::Completed)
-            ->count();
-
         return [
             'total_reviews' => (clone $reviews)->count(),
-            'books_read' => $booksRead,
+            'books_read' => $user->readingPlans()
+                ->where('status', ReadingPlanStatus::Completed)
+                ->count(),
             'average_rating' => (clone $reviews)->avg('rating') ?? 0,
         ];
     }

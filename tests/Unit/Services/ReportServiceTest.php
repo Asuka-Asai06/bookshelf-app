@@ -2,8 +2,10 @@
 
 namespace Tests\Unit\Services;
 
+use App\Enums\ReadingPlanStatus;
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\ReadingPlan;
 use App\Models\Review;
 use App\Models\User;
 use App\Services\ReportService;
@@ -19,7 +21,6 @@ class ReportServiceTest extends TestCase
         $user = User::factory()->create();
 
         $book1 = Book::factory()->create();
-
         $book2 = Book::factory()->create();
 
         Review::factory()->create([
@@ -40,23 +41,38 @@ class ReportServiceTest extends TestCase
             'rating' => 4,
         ]);
 
+        ReadingPlan::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $book1->id,
+            'status' => ReadingPlanStatus::Completed,
+        ]);
+
+        ReadingPlan::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $book2->id,
+            'status' => ReadingPlanStatus::Completed,
+        ]);
+
+        ReadingPlan::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => Book::factory(),
+            'status' => ReadingPlanStatus::In_Progress,
+        ]);
+
+        ReadingPlan::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => Book::factory(),
+            'status' => ReadingPlanStatus::Overdue,
+        ]);
+
         $service = app(ReportService::class);
         $stats = $service->getStats($user);
 
-        $this->assertSame(
-            3,
-            $stats['summary']['total_reviews']
-        );
+        $this->assertSame(3, $stats['summary']['total_reviews']);
 
-        $this->assertSame(
-            2,
-            $stats['summary']['books_read']
-        );
+        $this->assertSame(2, $stats['summary']['books_read']);
 
-        $this->assertEquals(
-            4,
-            $stats['summary']['average_rating']
-        );
+        $this->assertEquals(4, $stats['summary']['average_rating']);
     }
 
     public function test_評価分布を取得できる(): void
