@@ -60,8 +60,8 @@
                                             {{ $plan->completed_at?->format('Y-m-d') ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $plan->displayStatusClass() }}">
-                                                {{ $plan->displayStatus() }}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $plan->status->badgeClass() }}">
+                                                {{ $plan->status->label() }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">

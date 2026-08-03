@@ -22,6 +22,7 @@ class ReportServiceTest extends TestCase
 
         $book1 = Book::factory()->create();
         $book2 = Book::factory()->create();
+        $book3 = Book::factory()->create();
 
         Review::factory()->create([
             'user_id' => $user->id,
@@ -31,13 +32,13 @@ class ReportServiceTest extends TestCase
 
         Review::factory()->create([
             'user_id' => $user->id,
-            'book_id' => $book1->id,
+            'book_id' => $book2->id,
             'rating' => 3,
         ]);
 
         Review::factory()->create([
             'user_id' => $user->id,
-            'book_id' => $book2->id,
+            'book_id' => $book3->id,
             'rating' => 4,
         ]);
 
@@ -55,13 +56,13 @@ class ReportServiceTest extends TestCase
 
         ReadingPlan::factory()->create([
             'user_id' => $user->id,
-            'book_id' => Book::factory(),
+            'book_id' => Book::factory()->create()->id,
             'status' => ReadingPlanStatus::In_Progress,
         ]);
 
         ReadingPlan::factory()->create([
             'user_id' => $user->id,
-            'book_id' => Book::factory(),
+            'book_id' => Book::factory()->create()->id,
             'status' => ReadingPlanStatus::Overdue,
         ]);
 
@@ -79,37 +80,17 @@ class ReportServiceTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $book = Book::factory()->create();
+        $ratings = [1, 2, 2, 4, 5];
 
-        Review::factory()->create([
-            'user_id' => $user->id,
-            'book_id' => $book->id,
-            'rating' => 1,
-        ]);
+        foreach ($ratings as $rating) {
+            $book = Book::factory()->create();
 
-        Review::factory()->create([
-            'user_id' => $user->id,
-            'book_id' => $book->id,
-            'rating' => 2,
-        ]);
-
-        Review::factory()->create([
-            'user_id' => $user->id,
-            'book_id' => $book->id,
-            'rating' => 2,
-        ]);
-
-        Review::factory()->create([
-            'user_id' => $user->id,
-            'book_id' => $book->id,
-            'rating' => 4,
-        ]);
-
-        Review::factory()->create([
-            'user_id' => $user->id,
-            'book_id' => $book->id,
-            'rating' => 5,
-        ]);
+            Review::factory()->create([
+                'user_id' => $user->id,
+                'book_id' => $book->id,
+                'rating' => $rating,
+            ]);
+        }
 
         $service = app(ReportService::class);
         $stats = $service->getStats($user);
@@ -186,21 +167,24 @@ class ReportServiceTest extends TestCase
             'name' => '恋愛',
         ]);
 
-        $highBook = Book::factory()->create();
-        $highBook->genres()->attach($highGenre);
+        $highBook1 = Book::factory()->create();
+        $highBook1->genres()->attach($highGenre);
+
+        $highBook2 = Book::factory()->create();
+        $highBook2->genres()->attach($highGenre);
 
         $lowBook = Book::factory()->create();
         $lowBook->genres()->attach($lowGenre);
 
         Review::factory()->create([
             'user_id' => $user->id,
-            'book_id' => $highBook->id,
+            'book_id' => $highBook1->id,
             'rating' => 5,
         ]);
 
         Review::factory()->create([
             'user_id' => $user->id,
-            'book_id' => $highBook->id,
+            'book_id' => $highBook2->id,
             'rating' => 4,
         ]);
 
