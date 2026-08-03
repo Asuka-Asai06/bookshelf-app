@@ -110,27 +110,27 @@ class CheckReadingPlansTest extends TestCase
     }
 
     public function test_同じ通知は重複送信されない(): void
-{
-    $user = User::factory()->create();
+    {
+        $user = User::factory()->create();
 
-    $book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-    ReadingPlan::factory()->create([
-        'user_id' => $user->id,
-        'book_id' => $book->id,
-        'status' => ReadingPlanStatus::In_Progress,
-        'target_date' => today()->addDays(3),
-    ]);
+        ReadingPlan::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $book->id,
+            'status' => ReadingPlanStatus::In_Progress,
+            'target_date' => today()->addDays(3),
+        ]);
 
-    $this->artisan('reading-plans:check')
-        ->assertSuccessful();
+        $this->artisan('reading-plans:check')
+            ->assertSuccessful();
 
-    $this->artisan('reading-plans:check')
-        ->assertSuccessful();
+        $this->artisan('reading-plans:check')
+            ->assertSuccessful();
 
-    $this->assertDatabaseCount(
-        'notifications',
-        1
-    );
-}
+        $this->assertDatabaseCount(
+            'notifications',
+            1
+        );
+    }
 }
