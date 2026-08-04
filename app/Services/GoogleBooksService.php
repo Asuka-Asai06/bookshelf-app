@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 
 class GoogleBooksService
@@ -22,8 +23,18 @@ class GoogleBooksService
             ]
         );
 
+        // API利用制限エラー
+        if ($response->status() === 429) {
+            throw new Exception(
+                'Google Books APIの利用制限に達しました。しばらく時間をおいて再度お試しください。'
+            );
+        }
+
+        // その他のAPIエラー
         if (! $response->successful()) {
-            return null;
+            throw new Exception(
+                '書籍情報の取得に失敗しました。'
+            );
         }
 
         $data = $response->json();

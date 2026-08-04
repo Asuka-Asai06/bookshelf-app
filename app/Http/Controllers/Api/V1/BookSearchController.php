@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\GoogleBooksService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 
 class BookSearchController extends Controller
@@ -18,14 +19,21 @@ class BookSearchController extends Controller
      */
     public function show(string $isbn): JsonResponse
     {
-        $book = $this->googleBooksService->searchByIsbn($isbn);
+        try {
+            $book = $this->googleBooksService->searchByIsbn($isbn);
 
-        if ($book === null) {
+            if ($book === null) {
+                return response()->json([
+                    'error' => '書籍が見つかりません。',
+                ], 404);
+            }
+
+            return response()->json($book);
+
+        } catch (Exception $e) {
             return response()->json([
-                'message' => '書籍が見つかりません。',
-            ], 404);
+                'error' => $e->getMessage(),
+            ], 429);
         }
-
-        return response()->json($book);
     }
 }
