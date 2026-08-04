@@ -241,7 +241,15 @@ sail up -d //コマンド実行後にSQLコンテナが立ち上がるまで時�
 sail artisan migrate:fresh --seed
 ```
 
-8. NPM依存パッケージのインストール
+8. 通知機能の動作確認
+本アプリでは、読書計画の期限チェックを毎日0:00に実行するようスケジュールされています。
+ローカル環境で通知機能を確認するには、以下のコマンドを実行してください。
+```
+sail artisan reading-plans:check
+```
+実行後、期限切れまたは期限が近い読書計画があるユーザーに通知が作成されます。
+
+9. NPM依存パッケージのインストール
 ```
 sail npm install
 sail npm install alpinejs
@@ -249,7 +257,7 @@ sail npm run dev
 ```
 npm run dev は開発中は起動したままにしてください。
 
-9. アプリケーションへのアクセス
+10. アプリケーションへのアクセス
 ブラウザで http://localhost にアクセスします。
 
 ## Google Books API
