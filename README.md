@@ -13,11 +13,11 @@
 
 ## 使用技術
 ### バックエンド
-- PHP 8.4
+- PHP 8.5
 - Laravel 10.4
 - Laravel Fortify（認証機能）
 - Laravel Sanctum（APIトークン認証）
-- MySQL 8.0
+- MySQL 8.4
 
 ### フロントエンド
 - Tailwind CSS 3.4
